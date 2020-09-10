@@ -19,9 +19,7 @@
 ### Quick start
 1. Run all services:
 ```
-docker-compose up -d
-make run-migration
-docker-compose up
+./run_integration_test.sh
 ```
 
 2. Run the tests:
