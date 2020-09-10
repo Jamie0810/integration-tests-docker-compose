@@ -1,0 +1,327 @@
+syntax = "proto3";
+package order;
+
+service OrderCreateService {
+  // 建立訂單
+  // 聚合支付 僅打款
+  rpc OrderCreationPolypay(OrderCreationPolypayReq) returns (OrderCreationPolypayResp) {}
+  // 閃3 僅打款
+  rpc OrderCreationShan3(OrderCreationShan3Req) returns (OrderCreationShan3Resp) {}
+  // 閃6 僅打款 alipay only
+  rpc OrderCreationShan6(OrderCreationShan6Req) returns (OrderCreationShan6Resp) {}
+  // 北冥1 僅打款
+  rpc OrderCreationBeiming1(OrderCreationBeiming1Req) returns (OrderCreationBeiming1Resp) {}
+  // 北冥2 僅打款
+  rpc OrderCreationBeiming2(OrderCreationBeiming2Req) returns (OrderCreationBeiming2Resp) {}
+  // VATP 僅打款
+  rpc OrderCreationVATP(OrderCreationVATPReq) returns (OrderCreationVATPResp) {}
+
+  rpc OrderCreation(OrderCreationReq) returns (OrderCreationResp) {}
+
+  //  訂單服務器健康確認
+  rpc OrderHealth(OrderHealthReq) returns (OrderHealthResp) {}
+}
+
+enum PaymentType {
+  PAYMENT_UNKNOW = 0;
+  ALIPAY = 1;
+  WECHAT = 2;
+  BANKCARD = 3;
+}
+
+enum TransactionType {
+  TRANSACTION_UNKNOW = 0;
+  DEPOSIT = 1;
+  WITHDRAW = 2;
+}
+
+message UserBaseInfo {
+  string DeviceID = 1;
+  string DeviceIP = 2;
+  string DeviceType = 3;
+  string Telephone = 4;
+  string PlayerID = 5;
+  string Name = 6;
+}
+
+// kbc內商戶相關資訊
+message KbcMerchantInfo {
+  // 商戶編號
+  uint64 MerchantID = 1;
+  // 商戶名稱
+  string MerchantName = 2;
+  // 商戶項目編號
+  uint64 MerchantProjectID = 3;
+  // 商戶項目名稱
+  string MerchantProjectName = 4;
+  // 商戶產品編號
+  uint64 MerchantProductID = 5;
+  // 商戶產品名稱
+  string MerchantProductName = 6;
+  // 商戶產品API ID
+  uint64 MerchantProductAPIID = 7;
+  // 商戶產品API 名稱
+  string MerchantProductAPIName = 8;
+  // 商戶sercure key
+  string MerchantProductAPISecureKey = 9;
+}
+
+message OrderCreationPolypayReq {
+  string ChannelMerchantID = 1;
+  string MerchantOrderNumber = 2;
+  double Amount = 3;
+  TransactionType TransactionType = 4;
+  PaymentType PaymentType = 5;
+  string NotifyURL = 6;
+  KbcMerchantInfo MerchantInfo = 7;
+  message PlayerInfo {
+    UserBaseInfo BaseInfo = 1;
+    string PayAccount = 2;
+    string Metadata = 3;
+  }
+  PlayerInfo Info = 8;
+}
+
+message OrderCreationPolypayResp {
+  string PaymentURL = 1;
+}
+
+message OrderCreationShan3Req {
+  string ChannelMerchantID = 1;
+  string MerchantOrderNumber = 2;
+  double Amount = 3;
+  TransactionType TransactionType = 4;
+  PaymentType PaymentType = 5;
+  string NotifyURL = 6;
+  KbcMerchantInfo MerchantInfo = 7;
+  message PlayerInfo {
+    UserBaseInfo BaseInfo = 1;
+    string PayAccount = 2;
+    string Userdata = 3;
+  }
+  PlayerInfo Info = 8;
+}
+
+message OrderCreationShan3Resp {
+  string PaymentURL = 1;
+}
+
+message OrderCreationShan6Req {
+  string ChannelMerchantID = 1;
+  string MerchantOrderNumber = 2;
+  double Amount = 3;
+  TransactionType TransactionType = 4;
+  PaymentType PaymentType = 5;
+  string NotifyURL = 6;
+  KbcMerchantInfo MerchantInfo = 7;
+  message PlayerInfo {
+    UserBaseInfo BaseInfo = 1;
+    string AllName = 2;
+  }
+  PlayerInfo Info = 8;
+  string PromoteChannel = 9;
+  string Extra = 10;
+}
+
+message OrderCreationShan6Resp {
+  string PaymentURL = 1;
+}
+
+message OrderCreationBeiming1Req {
+  string ChannelMerchantID = 1;
+  string MerchantOrderNumber = 2;
+  double Amount = 3;
+  TransactionType TransactionType = 4;
+  PaymentType PaymentType = 5;
+  string NotifyURL = 6;
+  KbcMerchantInfo MerchantInfo = 7;
+  message PlayerInfo {
+    UserBaseInfo BaseInfo = 1;
+  }
+  PlayerInfo Info = 8;
+  string OrderPath = 9;
+  string MoneyPath = 10;
+}
+
+message OrderCreationBeiming1Resp {
+  string PaymentURL = 1;
+}
+
+message OrderCreationBeiming2Req {
+  string ChannelMerchantID = 1;
+  string MerchantOrderNumber = 2;
+  double Amount = 3;
+  TransactionType TransactionType = 4;
+  PaymentType PaymentType = 5;
+  string NotifyURL = 6;
+  KbcMerchantInfo MerchantInfo = 7;
+  message PlayerInfo {
+    UserBaseInfo BaseInfo = 1;
+    string BankCard = 2;
+    string BankCode = 3;
+    bool BankcardInfoOnly = 4;
+  }
+  PlayerInfo Info = 8;
+}
+
+message OrderCreationBeiming2Resp {
+  string PaymentURL = 1;
+}
+
+message OrderCreationBankcardReq {
+  string ChannelMerchantID = 1;
+  string MerchantOrderNumber = 2;
+  double Amount = 3;
+  TransactionType TransactionType = 4;
+  PaymentType PaymentType = 5;
+  string NotifyURL = 6;
+  KbcMerchantInfo MerchantInfo = 7;
+  message PlayerInfo {
+    UserBaseInfo BaseInfo = 1;
+    string Bankcard = 2;
+    string BankCode = 3;
+  }
+  PlayerInfo Info = 8;
+  string TrackingNumber = 9;
+}
+
+message OrderCreationVGAMReq {
+  string TrackingNumber = 1;
+  string WangGuanMerchantID = 2;
+  string MerchantOrderNumber = 3;
+  int64 MerchantID = 4;
+  string MerchantName = 5;
+  string OldOrderUID = 6;
+  double Amount = 7;
+  TransactionType TransactionType = 8;
+  PaymentType PaymentType = 9;
+  string CallBackURL = 10;
+  KbcMerchantInfo MerchantInfo = 11;
+  message PlayerInfo {
+    string PlayerUID = 1;
+    string AccountUID = 2;
+  }
+  PlayerInfo Info = 12;
+  int64 BusinessID = 13;
+  int32 IsSettleByBS = 14;
+  int32 IsAutomatic = 15;
+  int32 FeeType = 16;
+  double Fee = 17;
+  string BankCode = 18;
+  string AccountUIDRec = 19;
+  string AccountName = 20;
+  string BankNameRec = 21;
+  string BankBranchNameRec = 22;
+  string BankShengRec = 23;
+  string BankShiRec = 24;
+  int64 SleepSeconds = 25;
+  string BsCreator = 26;
+  string BsIP = 27;
+  string BsMeta = 28;
+}
+
+message OrderCreationVATPReq {
+  string MerchantID = 1;
+  string MerchantOrderNumber = 2;
+  double Amount = 3;
+  TransactionType TransactionType = 4;
+  PaymentType PaymentType = 5;
+  string CallBackURL = 6;
+  KbcMerchantInfo MerchantInfo = 7;
+  message PlayerInfo {
+    string PayerID = 1;
+    int32 DeviceType = 2;
+    string IP = 3;
+  }
+  PlayerInfo Info = 8;
+  string GatewayPath = 9;
+  int32 DisplayType = 10;
+  int32 FeeType = 16;
+  double Fee = 17;
+}
+
+message OrderCreationVATPResp {
+  string PaymentURL = 1;
+  string OrderUID = 2;
+  string MerchantOrderID = 3;
+  string ExpiredAt = 4;
+  string BankNameRec = 5;
+  string BankBranchNameRec = 6;
+  string BankCodeRec = 7;
+  string BankShenRec = 8;
+  string BankShiRec = 9;
+  string AccountRec = 10;
+  string AccountUIDRec = 11;
+  double ExpectedAmount = 12;
+}
+
+message OrderHealthReq{}
+
+message OrderHealthResp{
+  map<string,string> ServiceMap= 1;  // server , status .ex: "mysql":"ok" or "mysql":"error_connectFail"
+}
+
+message OrderCreationReq {
+  string APIKey = 1;
+  string MerchantOrderNumber = 2;
+  KbcMerchantInfo MerchantInfo = 3;
+  TransactionType TransactionType = 4;
+  PaymentType PaymentType = 5;
+  bytes PaymentInfo = 6;
+  double Amount = 7;
+  PlayerInfo PlayerInfo = 8;
+  string DiscountCode = 9;
+  string CallbackURL = 10;
+}
+
+message PlayerInfo{
+  string PlayerID = 1;
+  string DeviceID = 2;
+  string DeviceIP = 3;
+  string DeviceType = 4;
+  string Telephone = 5;
+  string Name = 6;
+  string PayAccount = 7;
+  string AlipayName = 8;
+  string Metadata = 9;
+}
+
+message OrderCreationResp{
+  string PaymentURL = 1;
+  string OrderUID = 2;
+  string MerchantOrderID = 3;
+  string ExpiredAt = 4;
+  string BankNameRec = 5;
+  string BankBranchNameRec = 6;
+  string BankCodeRec = 7;
+  string BankShenRec = 8;
+  string BankShiRec = 9;
+  string AccountRec = 10;
+  string AccountUIDRec = 11;
+  double ExpectedAmount = 12;
+}
+
+// Deposit
+message DepositOrderCreationReq {
+  string TrackingNumber = 1;
+  string APIKey = 2;
+  string MerchantOrderNumber = 3;
+  KbcMerchantInfo MerchantInfo = 4;
+  TransactionType TransactionType = 5;
+  PaymentType PaymentType = 6;
+  DepositPaymentInfo PaymentInfo = 7;
+  double Amount = 8;
+  PlayerInfo PlayerInfo = 9;
+  string CallbackURL = 10;
+  bytes Metadata = 11;
+}
+
+message DepositPaymentInfo {
+  string AccountUID = 1;
+  string AccountName = 2;
+  string BankCode = 3;
+  string BankName = 4;
+  string BankBranchName = 5;
+  string BankProvince = 6;
+  string BankCity = 7;
+}

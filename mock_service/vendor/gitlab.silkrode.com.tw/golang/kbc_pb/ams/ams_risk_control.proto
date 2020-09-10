@@ -1,0 +1,65 @@
+syntax = "proto3";
+package ams;
+option go_package = "gitlab.silkrode.com.tw/golang/kbc_pb/ams";
+
+// 風控service
+service RiskControlService {
+  rpc GetChannelRiskControl(GetChannelRiskControlReq) returns (GetChannelRiskControlResp) {}
+  rpc GetMerchantRiskControl(GetMerchantRiskControlReq) returns (GetMerchantRiskControlResp) {}
+  rpc GetWithoutCallbackLimitRiskControl(GetWithoutCallbackLimitRiskControlReq) returns (GetWithoutCallbackLimitRiskControlResp) {}
+  // 查詢商戶ID列表
+  rpc GetMerchantIDs(GetMerchantIDsReq) returns (GetMerchantIDsResp) {}
+}
+
+message GetChannelRiskControlReq{}
+
+message GetChannelRiskControlResp{
+  bool IsEnableIncreaseRateLimit = 1; // 是否啟用同比增幅預警標準
+  double DefaultIncreaseRateLimit = 2 ; // 同比增幅預警標準。 渠道當日出款量(交易成功的實際打款金額) 較昨日同期增加達到 X % 時進行 potato bot 預警
+  repeated ChannelRiskControl ChannelRiskControls = 3;
+}
+
+message ChannelRiskControl {
+  bool IsUseDefaultIncreaseRateLimit = 1; // 是否使用系統預設:同比增幅預警標準
+  double IncreaseRateLimit = 2; // 同比增幅預警標準。 商戶當日出款量(交易成功的實際打款金額) 較昨日同期增加達到 X % 時進行 potato bot 預警
+  string Code = 3;
+  string Name = 4;
+  uint64 ID = 5;
+}
+
+message GetMerchantRiskControlReq{}
+
+message GetMerchantRiskControlResp{
+  bool IsEnableIncreaseRateLimit = 1; // 是否啟用同比增幅預警標準
+  double DefaultIncreaseRateLimit = 2;// 同比增幅預警標準。 商戶當日出款量(交易成功的實際打款金額) 較昨日同期增加達到 X % 時進行 potato bot 預警
+  repeated MerchantRiskControl MerchantRiskControls = 3;
+}
+
+message MerchantRiskControl {
+  bool IsUseDefaultIncreaseRateLimit = 1; // 是否使用系統預設:同比增幅預警標準
+  double IncreaseRateLimit = 2; // 同比增幅預警標準。 商戶當日出款量(交易成功的實際打款金額) 較昨日同期增加達到 X % 時進行 potato bot 預警
+  int64 ID = 3;
+}
+
+message GetWithoutCallbackLimitRiskControlReq{}
+
+message GetWithoutCallbackLimitRiskControlResp{
+  bool IsEnableChannelWithoutCallbackLimit = 1; //  是否啟用未回調預警標準
+  string DefaultTimeRange = 2; // 時間區間：HH:MM:SS。
+  int64 DefaultCount = 3; // 未回調訂單數上限
+  repeated CallbackRiskControl CallbackRiskControls = 4;
+}
+
+message CallbackRiskControl {
+  bool IsUseDefaultWithoutCallbackLimit = 1; // 是否使用系統預設:未回調預警標準
+  string TimeRange = 2; // 時間區間：HH:MM:SS。
+  int64 Count = 3; // 未回調訂單數上限
+  string Code = 4;
+  string Name = 5;
+  uint64 ID = 6;
+}
+
+message GetMerchantIDsReq {}
+message GetMerchantIDsResp {
+  repeated uint64 MerchantIDs = 1;
+}

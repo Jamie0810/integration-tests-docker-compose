@@ -1,0 +1,66 @@
+env: dev
+stack_trace: true
+
+http:
+  port: 17030
+
+database:
+  driver: mysql
+  host: 10.1.1.111
+  port: 3307
+  ssl_mode: false
+  dbname: kbc
+  user: test
+  password: test
+  log_mode: true
+
+system:
+  channel_setting_url: /public/api/v1/order/query/
+
+redis:
+  host: 10.1.1.111
+  port: 6380
+  db: 1
+  pool_size: 1000
+  min_idle_conn: 100
+  dial_timeout: 10s
+  read_timeout: 10s
+  write_timeout: 10s
+  pool_timeout: 11s
+  idle_timeout: 1m
+
+grpc:
+    port: 10050
+
+pubsub:
+  project_id: silkrode-golang
+  credentials_file: ./pubsub_credentials.json
+  topic_update_wallet: topic_kbc_integration_test_update_wallet
+  topic_potato_message: topic_kbc_integration_test_bot
+  topic_bb_input: topic_kbc_integration_test_doctor_strange
+  topic_bb_output: topic_kbc_integration_test_deposit_sub_order
+  topic_feedback_message: topic_kbc_integration_test_feedback_message
+  topic_sync_merchant: topic_kbc_integration_test_api_for_sync_merchants
+
+blackbox:
+  default_order_timeout: 30m
+
+cache_cronjob:
+  refresh_timeout: 30s
+  frequency: '*/30 * * * * *'
+  ttl: 60s
+
+localcache:
+  eviction: 10s
+
+auth:
+  identity_address: kbc-identity:17486
+  token_ttl: 43200
+
+ip_keys_header:
+
+sync_merchant:
+  pool_size: 100
+  retry: 3
+  timeout: "5s"
+  auth_token: 9a03e763-a690-43e1-a0fe-d81d9a1e942e

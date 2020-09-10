@@ -1,0 +1,222 @@
+syntax = "proto3";
+package ams;
+option go_package = "gitlab.silkrode.com.tw/golang/kbc_pb/ams";
+
+// 產品接口
+message ProductAPI {
+  int64 ID = 1;
+  string Name = 2;
+  string Key = 3;
+  string ApiKey = 4;
+  string SecureKey = 5;
+  repeated string IPWhiteList = 6;
+  int64 MerchantID = 7;
+  string MerchantName = 8;
+  int64 MerchantProjectID = 9;
+  string MerchantProjectName = 10;
+  int64 ProductID = 11;
+  string ProductName = 12;
+}
+
+service MerchantService {
+  rpc GetProductAPIByID(GetProductAPIByIDReq) returns (GetProductAPIByIDResp) {}
+  // v1
+  rpc GetProductAPI(GetProductAPIReq) returns (GetProductAPIResp) {}
+  // v2
+  rpc GetProductAPIV2(GetProductAPIV2Req) returns (GetProductAPIV2Resp) {}
+  //  Merchant健康確認
+  rpc MerchantHealth(MerchantHealthReq) returns (MerchantHealthResp) {}
+}
+
+message MerchantHealthReq{}
+
+message MerchantHealthResp{
+  map<string,string> ServiceMap= 1;  // server , status .ex: "mysql":"ok" or "mysql":"error_connectFail"
+}
+
+message GetProductAPIReq {
+  string APIKey = 1;
+}
+
+message GetProductAPIResp {
+  ProductAPI ProductAPI = 1;
+}
+
+message GetProductAPIV2Req {
+  int64 ID = 1;
+  string APIKey = 2;
+}
+
+message GetProductAPIV2Resp {
+  ProductAPI ProductAPI = 1;
+}
+
+message GetProductAPIByIDReq {
+  int64 ID = 1;
+}
+
+message GetProductAPIByIDResp {
+  ProductAPI ProductAPI = 1;
+}
+
+service WalletService {
+  rpc UpdateBalanceDecrease(UpdateBalanceDecreaseReqs) returns (UpdateBalanceDecreaseResp) {}
+}
+
+message UpdateBalanceDecreaseReqs {
+  repeated UpdateBalanceDecreaseReq Req = 1;
+}
+message UpdateBalanceDecreaseReq {
+  enum WalletEventEnum {
+    ERROR_WALLET_EVENT = 0;
+    ACTIVE_PRODUCT = 1;
+    TRANSACTION_BALANCE_INCREASE = 2;
+    TRANSACTION_REFUND_BALANCE_INCREASE = 3;
+    FEE_REFUND_BALANCE_INCREASE = 4;
+    WITHDRAW_REFUND_BALANCE_INCREASE = 5;
+    DEPOSIT_BALANCE_INCREASE = 6;
+    TRANSACTION_BALANCE_DECREASE = 7;
+    FEE_BALANCE_DECREASE = 8;
+    WITHDRAW_BALANCE_DECREASE = 9;
+  }
+  enum WalletSourceTypeEnum {
+    OTHER = 0;
+    DEPOSIT_TO_ORDER = 1;
+    WITHDRAW_FROM_ORDER = 2;
+    DEPOSIT_TO_WALLET = 3;
+    WITHDRAW_FROM_WALLET = 4;
+  }
+
+  enum FeeRateTypeEnum {
+    ERROR_FEE_RATE_TYPE = 0;
+    FIXED = 1;
+    RATIO = 2;
+  }
+
+  uint64 MerchantID = 1;
+  uint64 ProductID = 2;
+  uint64 ProjectID = 3;
+  double OperationBalance = 4;
+  WalletEventEnum WalletEvent = 5;
+  FeeRateTypeEnum FeeRateType = 6;
+  double FeeRate = 7;
+  WalletSourceTypeEnum SourceType = 8;
+  string SourceTable = 9;
+  string SourceTableKey = 10;
+  bool AllowNegative = 11;
+}
+
+message UpdateBalanceDecreaseResp {
+  int32 Status = 1;
+}
+
+// 黑箱（風控）服務
+service BBService {
+  rpc AccountOrderCheck(AccountOrderCheckReq) returns (AccountOrderCheckResp) {}
+  rpc GetRetryAndAlertSetting(RetryAndAlertSettingReq) returns (RetryAndAlertSettingResp){}
+  rpc GetChannelTimeout(GetChannelTimeoutReq) returns (GetChannelTimeoutResp){}
+}
+
+message AccountOrderCheckReq{
+  int64 ProductAPIID = 1;                 // 產品街口主鍵號
+  string MerchantName = 2;                // 商戶姓名
+  string TrackingNumber = 3;              // 訂單編號
+  string PlayerID = 4;                    // 玩家ID
+  double DepositDailyLimit = 5;           // 玩家ID單日打款總額
+  double DepositAccountAmount = 6;        // 打款額度
+  double WithdrawAccountAmount = 7;       // 收款額度
+  string PaymentType = 8;                 // 打收款方式
+  string AccountNumber = 9;               // 卡號或收付款帳號
+  double AccountDepositDailyTotal = 10;   // 玩家帳號當日打款總額
+  bool IsNewPlayer = 11;                  // 是否為新玩家
+  bool IsNewAccount = 12;                 // 是否為舊玩家新收款帳號
+  repeated string AllowStep = 13;         // 要跳過的風控邏輯代碼
+  double MerchantDepositDailyAmount = 14;  // 商戶當日已打款金額
+  string CallbackURL = 15;                // 訂單回調地址
+}
+
+enum PaymentErrorType {
+  NO_ERROR = 0;                     // 沒有錯誤
+  OVER_DAILY_LIMIT = 1;             // 超過單日額度
+  OVER_CREATE_FREQUENCY = 2;        // 超過M分鐘建立 N筆訂單
+  BECLOCKED = 3;                    // 被黑名單擋掉
+  NO_CHANNEL = 4;                   // 沒有支援的付款渠道
+  ERR_PAYMENT = 5;                  // 檢查付款方式發生錯誤
+  INVALID_PAYMENT = 6;              // 不支援的付款方式
+  NOFOUND_PRODUCTAPI = 7;           // 找不到產品接口
+  DISABLE_PRODUCTAPI = 8;           // 產品接口未啟用
+  NOFOUND_MERCHANT = 9;             // 找不到商戶
+  DISABLE_MERCHANT = 10;            // 商戶未啟用
+  DISABLE_MERCHANT_DEPOSIT = 11;    // 商戶未啟用打款
+  DISABLE_MERCHANT_WITHDRAW = 12;   // 商戶未啟用收款
+  NOFOUND_PROJECT = 13;             // 找不到項目
+  DISABLE_PROJECT = 14;             // 項目未啟用
+  NOFOUND_PRODUCT = 15;             // 找不到產品
+  DISABLE_PRODUCT = 16;             // 產品未啟用
+  ERR_BLACKLISST = 17;              // 取得黑名單錯誤
+  ERR_CHECK_FREQUENCY = 18;         // 檢查玩家打單頻率錯誤
+  ERR_DAILY_LIMIT = 19;              // 檢查單日額度錯誤
+  ERR_FEE = 20;                     // 取得手續費設定錯誤
+  ERR_MARK_ORDER = 21;              // 標記成功訂單失敗（計算建單頻率用）
+  PAUSE = 22;                       // 風控暫停
+  OTHERS = 23;                      // 其他錯誤
+}
+
+enum TransferOptionType {
+  FIXED = 0;  // 固定費率
+  RATE = 1;   // 比率
+}
+
+message Channel {
+  uint64 ID = 1;              // 渠道編號
+  string Code = 2;            // 渠道代碼
+  string Name = 3;            // 渠道名稱
+  int64 Timeout = 4;          // 訂單建立過多久沒收到回調轉為 [待確認] （time.Duration)
+  int64 CallbackRetry = 5;    // 渠道建單|回調失敗重試次數
+}
+
+message AccountOrderCheckResp{
+  bool IsAllow = 1;                                 // 是否通過風控
+  PaymentErrorType PaymentErrorType = 2;            // 錯誤類型
+  repeated Channel AllowChannel = 3;                // 允許的渠道權重從大至小排序
+  TransferOptionType DepositToPlayerOption = 4;     // 打款手續費選項
+  TransferOptionType WithdrawFromPlayerOption = 5;  // 收款手續費選項
+  double DepositFeeToPlayer = 6;                    // 打款手續費
+  double WithdrawFeeFromPlayer = 7;                 // 收款手續費
+  bool AllowNegative = 8;                           // 允許錢包負數
+  repeated string BBCode = 9;                       // 風控暫停原因
+  string TrackingNumber = 10;              // 訂單編號
+}
+
+message RetryAndAlertSettingReq{
+}
+
+message RetryAndAlertSettingResp{
+  int64 RetryCount = 1; // 建單失敗重試次數
+}
+
+message GetChannelTimeoutReq{
+}
+
+message ChannelSetting {
+  string Code = 1;    // 渠道代碼
+  int64 DepositTimeout = 2;  // 打款訂單建立過多久沒收到回調轉為 [待確認] （time.Duration)
+  int64 WithdrawTimeout = 3; // 收款訂單建立過多久沒收到回調轉為 [待確認] （time.Duration)
+}
+
+message GetChannelTimeoutResp{
+  repeated ChannelSetting Channels = 1; // 渠道資料
+}
+
+service FeedbackService {
+  rpc GetFeedBackOpenCount(GetFeedBackOpenCountReq) returns (GetFeedBackOpenCountResp) {}
+  rpc SetFeedBackDone(SetFeedBackDoneReq) returns (SetFeedBackDoneResp) {}
+}
+
+message GetFeedBackOpenCountReq{}
+message GetFeedBackOpenCountResp{
+  uint64 Count = 1;
+}
+
+message SetFeedBackDoneReq{}
+message SetFeedBackDoneResp{}

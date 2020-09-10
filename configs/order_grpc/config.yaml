@@ -1,0 +1,73 @@
+env: integration_test
+stack_trace: true
+
+server:
+  port: 8081
+  grpc_port: 7070
+
+database:
+  driver: mysql
+  host: 10.1.1.111
+  port: 3307
+  ssl_mode: false
+  dbname: kbc
+  user: test
+  password: test
+  log_mode: true
+
+pubsub:
+  project_id: silkrode-golang
+  credentials_file: ./pubsub_credentials.json
+  topic_update_wallet: integration_test_update_wallet
+  topic_chatbot_order: topic_kbc_integration_test_bot
+  topic_deposit_bankcard: topic_kbc_integration_test_deposit_bankcard
+  topic_deposit_vgam: topic_kbc_integration_test_deposit_vgam
+  topic_deposit: topic_kbc_integration_test_deposit
+  topic_callBack_polyPay_order: kbc_integration_test_callBack_polyPay_order
+  topic_callBack_bandCard_order: kbc_integration_test_callBack_bandCard_order
+  topic_callBack_vgam_order: kbc_integration_test_callBack_vgam_order
+  topic_callBack_vatp_order: kbc_integration_test_callBack_vatp_order
+  topic_callBack_shan6_order: kbc_integration_test_callBack_shan6_order
+  topic_callBack_beiming1_order: kbc_integration_test_callBack_beiming1_order
+  topic_callBack_beiming2_order: kbc_integration_test_callBack_beiming2_order
+  topic_deposit_risk_control_check: topic_kbc_integration_test_doctor_strange
+  topic_deposit_sub_order: topic_kbc_integration_test_deposit_sub_order
+  topic_create_sub_order_history: topic_kbc_integration_test_create_sub_order_history
+  topic_manual_callback: topic_kbc_integration_test_manual_callback
+  topic_create_deposit_sub_order: topic_kbc_integration_test_create_deposit_sub_order
+  topic_callback_deposit: topic_kbc_integration_test_callback_deposit
+
+redis:
+  address: 10.1.1.111
+  port: 6380
+  db: 1
+  retry_count: retryCount
+  continuous_failure_warning: continuousFailureWarning
+
+grpc:
+  ams:
+    # address: kbc-ams-grpc
+    address: localhost
+    port: 10050
+
+ams_database:
+  driver: mysql
+  host: 10.1.1.111
+  port: 3307
+  ssl_mode: false
+  dbname: kbc
+  user: test
+  password: test
+  log_mode: true
+
+callback: https://api.huimai027.com/public/api/v1/order/thridPartyNotification/
+
+vatp:
+  host: http://sit-vatp.gcp.silkrode.com.tw
+  merchant_id: 198
+  api_key: 8b24f9a6-a56b-4cee-878b-31f9cc669bd3
+
+vgam:
+  host: http://sit-vgam.gcp.silkrode.com.tw
+  business_id: 14
+  api_key: e016c9e3-ec57-40ef-baba-1e6d9e50ab58

@@ -1,0 +1,115 @@
+syntax = "proto3";
+package order;
+
+service OrderNotifyService {
+	// 第三方服務平台回調
+  rpc ThridPartyNotification(ThridPartyNotificationReq) returns (ThridPartyNotificationResp) {}
+  // 聚合回調
+  rpc PolypayNotification(PolypayNotificationReq) returns (PolypayNotificationResp) {}
+  // 閃3回調
+  rpc Shan3Notification(Shan3NotificationReq) returns (Shan3NotificationResp) {}
+  // 閃6回調
+  rpc Shan6Notification(Shan6NotificationReq) returns (Shan6NotificationResp) {}
+  // 北冥1回調
+  rpc Beiming1Notification(Beiming1NotificationReq) returns (Beiming1NotificationResp) {}
+  // 北冥2回調
+  rpc Beiming2Notification(Beiming2NotificationReq) returns (Beiming2NotificationResp) {}
+  // 銀行卡回調
+  rpc BankcardNotification(BankcardNotificationReq) returns (BankcardNotificationResp) {}
+  // VGAM回調
+  rpc VGAMNotification(VGAMNotificationReq) returns (VGAMNotificationResp) {}
+  // VATP回調
+  rpc VATPNotification(VATPNotificationReq) returns (VATPNotificationResp) {}
+}
+
+message ThridPartyNotificationReq {
+  bytes ReqestBody = 1;
+  string RawQuery = 2;
+  string ChannelID = 3;
+}
+
+message ThridPartyNotificationResp {
+  string RequestMessage = 1;
+}
+
+message PolypayNotificationReq {
+  bytes ReqestBody = 1;
+  string RawQuery = 2;
+  string ChannelID = 3;
+}
+
+message PolypayNotificationResp {
+  string RequestMessage = 1;
+}
+
+message Shan3NotificationReq {
+  bytes ReqestBody = 1;
+  string RawQuery = 2;
+  string ChannelID = 3;
+}
+
+message Shan3NotificationResp {
+  string RequestMessage = 1;
+}
+
+message Shan6NotificationReq {
+  bytes ReqestBody = 1;
+  string RawQuery = 2;
+  string ChannelID = 3;
+}
+
+message Shan6NotificationResp {
+  int32 Status = 1;
+}
+
+message BankcardNotificationReq {
+  bytes ReqestBody = 1;
+  string RawQuery = 2;
+  string ChannelID = 3;
+}
+
+message BankcardNotificationResp {
+  int32 Status = 1;
+}
+
+message VGAMNotificationReq {
+  bytes ReqestBody = 1;
+  string RawQuery = 2;
+  string ChannelID = 3;
+  map<string, string> headers = 4;
+}
+
+message VGAMNotificationResp {
+  int32 Status = 1;
+}
+
+message VATPNotificationReq {
+  bytes ReqestBody = 1;
+  string RawQuery = 2;
+  string ChannelID = 3;
+  map<string, string> headers = 4;
+}
+
+message VATPNotificationResp {
+  int32 Status = 1;
+}
+
+message Beiming1NotificationReq {
+  bytes ReqestBody = 1;
+  string RawQuery = 2;
+  string ChannelID = 3;
+}
+
+message Beiming1NotificationResp {
+  int32 Status = 1;
+}
+
+message Beiming2NotificationReq {
+  bytes ReqestBody = 1;
+  string RawQuery = 2;
+  string ChannelID = 3;
+}
+
+message Beiming2NotificationResp {
+  int32 Status = 1;
+}

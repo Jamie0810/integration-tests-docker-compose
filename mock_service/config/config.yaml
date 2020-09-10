@@ -1,0 +1,11 @@
+#order grpc
+grpc:
+  # addr: 172.16.11.15 
+  addr: localhost
+  port: 10050
+
+pubsub:
+  project_id: silkrode-golang
+  credentials_file_path: ./pubsub_credentials.json
+  topic_bb_input: topic_kbc_integration_test_doctor_strange
+  topic_bb_output: topic_kbc_integration_test_deposit_sub_order

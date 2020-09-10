@@ -1,0 +1,114 @@
+syntax = "proto3";
+package order;
+
+service OrderService {
+	// 建單是否成功之狀態回調
+	rpc OrderStatus(OrderStatusReq) returns (OrderStatusResp) {}
+	// 查詢訂單
+	rpc OrderQuery(OrderQueryReq) returns (OrderQueryResp) {}
+  // 商戶打款預警
+  rpc OrderCompareMerchantWithdraw(OrderCompareMerchantWithdrawReq) returns (OrderCompareMerchantWithdrawResp) {}
+  // 渠道打款預警
+  rpc OrderCompareChannelWithdraw(OrderCompareChannelWithdrawReq) returns (OrderCompareChannelWithdrawResp) {}
+  // 訂單未回調預警
+  rpc OrderCompareNotCallbackCount(OrderCompareNotCallbackCountReq) returns (OrderCompareNotCallbackCountResp) {}
+  // 查詢渠道code列表
+  rpc OrderChannelCodes(OrderChannelCodesReq) returns (OrderChannelCodesResp) {}
+}
+
+message OrderStatusReq{
+  string TrackingNumber = 1;
+  string MerchantOrderNumber = 2;
+  double Balance = 3;
+  string TransactionType = 4;
+  string RequestStatus = 5;
+  string RequestMessage = 6;
+}
+
+message OrderStatusResp{
+  string RequestMessage = 1;
+}
+
+enum OrderStatus {
+  STATUS_UNKNOW = 0;
+  TO_BE_CONFIRMED = 1;
+  PROCESSING = 2;
+  SUCCEED = 3;
+  FAILED = 4;
+  PAUSED = 5;
+}
+
+message OrderQueryReq {
+  uint64 MerchantID = 1;
+  uint64 ProjectID = 2;
+  string MerchantOrderNumber = 3;
+}
+
+message OrderQueryResp {
+  string MerchatOrderNumber = 1;
+  string PlatformOrderNumber = 2;
+  string MerchantNotifyURL = 3;
+  string PlayerID = 4;
+  double EstimatedAmount = 5;
+  double ActualAmount = 6;
+  OrderStatus OrderStatus = 7;
+  string CreatedAt = 8;
+  string UpdatedAt = 9;
+  string Code = 10;
+  string ErrorMessage = 11;
+  string AccountNumber = 12;
+  string BankCode = 13;
+  string BankName = 14;
+  string AccountNumberRec = 15;
+  string BankCodeRec = 16;
+  string BankNameRec = 17;
+  string CompletedAt = 18;
+}
+
+message OrderCompareMerchantWithdrawReq {
+  repeated uint64 MerchantIDs = 1;
+  int64 CurrentTime = 2;
+  int64 PastTime = 3;
+}
+
+message OrderCompareMerchantWithdraw {
+  uint64 MerchantID = 1;
+  double CurrentCost = 2;
+  double PastCost = 3;
+}
+
+message OrderCompareMerchantWithdrawResp {
+  repeated OrderCompareMerchantWithdraw Costs = 1;
+}
+
+message OrderCompareChannelWithdrawReq {
+  repeated string ChannelCodes = 1;
+  int64 CurrentTime = 2;
+  int64 PastTime = 3;
+}
+
+message OrderCompareChannelWithdraw {
+  uint64 ChannelID = 1;
+  string ChannelCode = 2;
+  double CurrentCost = 3;
+  double PastCost = 4;
+}
+
+message OrderCompareChannelWithdrawResp {
+  repeated OrderCompareChannelWithdraw Costs = 1;
+}
+
+message OrderCompareNotCallbackCountReq {
+  int64 Time = 1;
+  string TimeRange = 2; // 指定的時間區間
+  string channel_code = 3;
+}
+
+message OrderCompareNotCallbackCountResp {
+  uint64 Count = 1;
+}
+
+message OrderChannelCodesReq {}
+message OrderChannelCodesResp {
+  repeated string ChannelCodes = 1;
+}

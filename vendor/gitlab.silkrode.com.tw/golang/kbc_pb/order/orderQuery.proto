@@ -1,0 +1,145 @@
+syntax = "proto3";
+package order;
+
+service OrderQuery {
+    // 聚合支付
+    rpc PolypayQuery(PolypayQueryReq) returns (PolypayQueryResp) {}
+    rpc PolypayQueryOrder(PolypayQueryOrderReq) returns (PolypayQueryOrderResp) {}
+    rpc PolypayGetPeriodCount(PolypayGetPeriodCountReq) returns (PolypayGetCountResp) {}
+    rpc PolypayGetMonthCount(PolypayGetMonthCountReq) returns (PolypayGetCountResp) {}
+    rpc PolypayGetDailyCount(PolypayGetDailyCountReq) returns (PolypayGetCountResp) {}
+    // 閃3
+    rpc Shan3Query(Shan3QueryReq) returns (Shan3QueryResp) {}
+    // 閃6
+    rpc Shan6Query(Shan6QueryReq) returns (Shan6QueryResp) {}
+    // 銀行卡
+    rpc BankcardQuery(BankcardQueryReq) returns (BankcardQueryResp) {}
+    // 北冥1
+    rpc Beiming1Query(Beiming1QueryReq) returns (Beiming1QueryResp) {}
+    // 北冥2
+    rpc Beiming2Query(Beiming2QueryReq) returns (Beiming2QueryResp) {}
+    // 兌換支付
+    rpc ExchangeQuery(ExchangeQueryReq) returns (ExchangeQueryResp) {}
+}
+
+message PolypayQueryReq {
+    bytes RequestBody = 1;
+    string RawQuery = 2;
+    string APIPath = 3;
+}
+
+message PolypayQueryResp {
+    bytes ResponseBody = 1;
+}
+
+message PolypayQueryOrderReq {
+    uint64 MerchantID = 1;
+    string OrderID = 2;
+}
+
+message PolypayQueryOrderResp {
+    string MerchantID = 1 [json_name="mid"];
+    string TradeID = 2 [json_name="merchant_trade_id"];
+    string Payment = 3 [json_name="payment"];
+    string TradeAmount = 4 [json_name="trade_amount"];
+    string ReceiptAmount = 5 [json_name="receipt_amount"];
+    string CallbackURL = 6 [json_name="callback_url"];
+    string PayTime = 7 [json_name="pay_time"];
+    string Username = 8 [json_name="username"];
+    string Player = 9 [json_name="player"];
+    string PayAccount = 10 [json_name="pay_account"];
+    string DeviceIP = 11 [json_name="device_ip"];
+    string DeviceID = 12 [json_name="device_id"];
+    string DeviceType = 13 [json_name="device_type"];
+    string Telephone = 14 [json_name="telephone"];
+    uint64 Status = 15 [json_name="status"];
+    string Fee = 16 [json_name="fee"];
+    string FeeRate = 17 [json_name="fee_rate"];
+}
+
+message PolypayGetPeriodCountReq {
+    uint64 MerchantID = 1;
+    string StartDate = 2;
+    string EndDate = 3;
+}
+
+message PolypayGetMonthCountReq {
+    uint64 MerchantID = 1;
+    string Date = 2;
+}
+
+message PolypayGetDailyCountReq {
+    uint64 MerchantID = 1;
+    string Date = 2;
+}
+
+message PolypayGetCountResp {
+    repeated PolypayGetCount Counts = 1 [json_name="data"];
+}
+
+message PolypayGetCount {
+    string MerchantID = 1 [json_name="mid"];
+    string Day = 2 [json_name="day"];
+    string DayTotal = 3 [json_name="day_total"];
+    string UpdatedAt = 4 [json_name="updated_at"];
+}
+
+message Shan3QueryReq {
+    bytes RequestBody = 1;
+    string RawQuery = 2;
+    string APIPath = 3;
+}
+
+message Shan3QueryResp {
+    bytes ResponseBody = 1;
+}
+
+message Shan6QueryReq {
+    bytes RequestBody = 1;
+    string RawQuery = 2;
+    string APIPath = 3;
+}
+
+message Shan6QueryResp {
+    bytes ResponseBody = 1;
+}
+
+message BankcardQueryReq {
+    bytes RequestBody = 1;
+    string RawQuery = 2;
+    string APIPath = 3;
+}
+
+message BankcardQueryResp {
+    bytes ResponseBody = 1;
+}
+
+message Beiming1QueryReq {
+    bytes RequestBody = 1;
+    string RawQuery = 2;
+    string APIPath = 3;
+}
+
+message Beiming1QueryResp {
+    bytes ResponseBody = 1;
+}
+
+message Beiming2QueryReq {
+    bytes RequestBody = 1;
+    string RawQuery = 2;
+    string APIPath = 3;
+}
+
+message Beiming2QueryResp {
+    bytes ResponseBody = 1;
+}
+
+message ExchangeQueryReq {
+    bytes RequestBody = 1;
+    string RawQuery = 2;
+    string APIPath = 3;
+}
+
+message ExchangeQueryResp {
+    bytes ResponseBody = 1;
+}

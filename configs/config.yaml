@@ -1,0 +1,7 @@
+grpc:
+  addr: localhost:7070 #order grpc
+
+pubsub:
+  project_id: silkrode-golang
+  credentials_file_path: ./pubsub_credentials.json
+  topic_deposit: topic_kbc_integration_test_deposit 
